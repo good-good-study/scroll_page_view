@@ -1,0 +1,17 @@
+name: scroll_page_view
+description: A new Flutter Scroll PageView package.
+publish_to: 'none'
+version: 0.0.2
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
