@@ -1,5 +1,10 @@
+#scroll_page_view
+
+## 1.0.1 - 2021/07/31
+* update readme.md
+
 ## 1.0.0 - 2021/07/31
-* Support Sound Null Safety
+* support Sound Null Safety
 
 ## 0.0.1 - 2020/09/11
 * 无限滑动的PageView

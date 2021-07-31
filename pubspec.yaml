@@ -1,6 +1,6 @@
 name: scroll_page_view
-description: A new Flutter Scroll PageView package.
-version: 1.0.0
+description: A new Flutter Scroll PageView package.support infinite swipe 、 custom indicator.
+version: 1.0.1
 homepage: https://github.com/good-good-study
 
 environment:
