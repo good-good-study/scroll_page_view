@@ -40,6 +40,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Scroll Page View Demo'),
         ),
         body: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
           slivers: [
             ///Default
             const SliverPadding(
