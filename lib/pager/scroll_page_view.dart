@@ -114,7 +114,7 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     _initWidget();
     _start();
   }
@@ -123,7 +123,7 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
   void dispose() {
     cancelTimer();
     widget.controller.get().dispose();
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -283,11 +283,13 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
   void _scrollPage() {
     ++currentIndex;
     var next = currentIndex % _children.length;
-    widget.controller.get().animateToPage(
-          next,
-          duration: widget.duration,
-          curve: Curves.ease,
-        );
+    if (widget.controller.get().hasClients) {
+      widget.controller.get().animateToPage(
+            next,
+            duration: widget.duration,
+            curve: Curves.ease,
+          );
+    }
   }
 
   ///page切换后的回调，及时修复索引
@@ -296,14 +298,18 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
       //当前选中的是第一个位置，自动选中倒数第二个位置
       currentIndex = _children.length - 2;
       await Future.delayed(const Duration(milliseconds: 400));
-      widget.controller.get().jumpToPage(currentIndex);
-      realPosition = currentIndex - 1;
+      if (widget.controller.get().hasClients) {
+        widget.controller.get().jumpToPage(currentIndex);
+        realPosition = currentIndex - 1;
+      }
     } else if (index == _children.length - 1) {
       //当前选中的是倒数第一个位置，自动选中第一个索引
       currentIndex = 1;
       await Future.delayed(const Duration(milliseconds: 400));
-      widget.controller.get().jumpToPage(currentIndex);
-      realPosition = 0;
+      if (widget.controller.get().hasClients) {
+        widget.controller.get().jumpToPage(currentIndex);
+        realPosition = 0;
+      }
     } else {
       currentIndex = index;
       realPosition = index - 1;

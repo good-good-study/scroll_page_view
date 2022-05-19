@@ -1,5 +1,8 @@
 #scroll_page_view
 
+## 1.0.2 - 2022/05/19
+* support flutter3
+
 ## 1.0.1 - 2021/07/31
 * update readme.md
 
