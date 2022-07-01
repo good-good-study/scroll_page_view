@@ -114,7 +114,7 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
     _initWidget();
     _start();
   }
@@ -123,7 +123,7 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
   void dispose() {
     cancelTimer();
     widget.controller.get().dispose();
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
   }
 
