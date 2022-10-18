@@ -15,10 +15,11 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   static const _images = [
-    'https://img0.baidu.com/it/u=1653580614,1680935100&fm=26&fmt=auto&gp=0.jpg',
-    'https://img2.baidu.com/it/u=3610762567,1537181675&fm=26&fmt=auto&gp=0.jpg',
-    'https://img1.baidu.com/it/u=392290897,2018293179&fm=26&fmt=auto&gp=0.jpg',
-    'https://img0.baidu.com/it/u=1174472233,2731877603&fm=26&fmt=auto&gp=0.jpg',
+    'https://files.flutter-io.cn/flutter-cn/landing/images/Dash_Phone_Games_v04.width-635.png',
+    'https://files.flutter-io.cn/flutter-cn/landing/images/flutter_roadmap_2022.width-635.png',
+    'https://files.flutter-io.cn/flutter-cn/landing/images/windows_flutter.width-635.jpg',
+    'https://files.flutter-io.cn/posts/flutter-cn/2022/dart-2-18/image3.png',
+    'https://files.flutter-io.cn/flutter-cn/landing/images/dart_image.width-635.png',
   ];
 
   @override
@@ -38,83 +39,99 @@ class _MyAppState extends State<MyApp> {
           centerTitle: false,
           title: const Text('Scroll Page View Demo'),
         ),
-        body: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            ///Default
-            const SliverPadding(
-              padding: EdgeInsets.all(16),
-              sliver: SliverToBoxAdapter(
-                child: Text(
-                  'Default',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        body: Builder(builder: (context) {
+          return CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              ///Default
+              const SliverPadding(
+                padding: EdgeInsets.all(16),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    'Default',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
                 ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 164,
-                child: ScrollPageView(
-                  controller: ScrollPageController(),
-                  children: _images.map((image) => _imageView(image)).toList(),
+              SliverToBoxAdapter(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) {
+                        return Scaffold(
+                            appBar: AppBar(title: const Text('二级页面')));
+                      }),
+                    );
+                  },
+                  child: SizedBox(
+                    height: 164,
+                    child: ScrollPageView(
+                      key: const Key('d'),
+                      controller: ScrollPageController(),
+                      children:
+                          _images.map((image) => _imageView(image)).toList(),
+                    ),
+                  ),
                 ),
               ),
-            ),
 
-            ///Indicator
-            const SliverPadding(
-              padding: EdgeInsets.all(16),
-              sliver: SliverToBoxAdapter(
-                child: Text(
-                  'Indicator',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ///Indicator
+              const SliverPadding(
+                padding: EdgeInsets.all(16),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    'Indicator',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
                 ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 164,
-                child: ScrollPageView(
-                  controller: ScrollPageController(),
-                  delay: const Duration(seconds: 3),
-                  indicatorAlign: Alignment.centerRight,
-                  children: (_images.reversed)
-                      .map((image) => _imageView(image))
-                      .toList(),
-                ),
-              ),
-            ),
-
-            ///Indicator Builder
-            const SliverPadding(
-              padding: EdgeInsets.all(16),
-              sliver: SliverToBoxAdapter(
-                child: Text(
-                  'Indicator Builder',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                ),
-              ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.only(bottom: 24),
-              sliver: SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: SizedBox(
                   height: 164,
                   child: ScrollPageView(
                     controller: ScrollPageController(),
-                    delay: const Duration(seconds: 4),
-                    indicatorAlign: Alignment.bottomRight,
-                    indicatorPadding:
-                        const EdgeInsets.only(bottom: 8, right: 16),
-                    indicatorWidgetBuilder: _indicatorBuilder,
-                    children:
-                        _images.map((image) => _imageView(image)).toList(),
+                    delay: const Duration(seconds: 3),
+                    indicatorAlign: Alignment.centerRight,
+                    children: (_images.reversed)
+                        .map((image) => _imageView(image))
+                        .toList(),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
+
+              ///Indicator Builder
+              const SliverPadding(
+                padding: EdgeInsets.all(16),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    'Indicator Builder',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.only(bottom: 24),
+                sliver: SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 164,
+                    child: ScrollPageView(
+                      controller: ScrollPageController(),
+                      delay: const Duration(seconds: 4),
+                      indicatorAlign: Alignment.bottomRight,
+                      indicatorPadding:
+                          const EdgeInsets.only(bottom: 8, right: 16),
+                      indicatorWidgetBuilder: _indicatorBuilder,
+                      children:
+                          _images.map((image) => _imageView(image)).toList(),
+                    ),
+                  ),
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 1080))
+            ],
+          );
+        }),
       ),
     );
   }

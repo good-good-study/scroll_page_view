@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-///PageView滑动监听
+/// PageView滑动监听
 class ScrollPageController {
   PageController controller;
 
-  ///[PageController.initialPage]
+  /// [PageController.initialPage]
   final int initialPage;
 
-  ///[PageController.keepPage]
+  /// [PageController.keepPage]
   final bool keepPage;
 
   /// [PageController.viewportFraction]

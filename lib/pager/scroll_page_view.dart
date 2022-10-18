@@ -2,76 +2,77 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import 'page_controller.dart';
 
-///自定义Indicator
+/// 自定义Indicator
 typedef IndicatorWidgetBuilder = Widget? Function(
   BuildContext context,
   int index,
   int length,
 );
 
-///create by xt.sun
-///2020/11/26
-///可以定时切换的PageView
+/// create by xt.sun
+/// 2020/11/26
+/// 可以定时切换的PageView
 class ScrollPageView extends StatefulWidget {
   final bool isTimer;
 
   ///Page切换滑动的时间
   final Duration duration;
 
-  ///多长时间切换一次Page
+  /// 多长时间切换一次Page
   final Duration delay;
 
-  ///[PageView.allowImplicitScrolling]
+  /// [PageView.allowImplicitScrolling]
   final bool allowImplicitScrolling;
 
-  ///[PageView.restorationId]
+  /// [PageView.restorationId]
   final String? restorationId;
 
-  ///[PageView.scrollDirection]
+  /// [PageView.scrollDirection]
   final Axis scrollDirection;
 
-  ///[PageView.reverse]
+  /// [PageView.reverse]
   final bool reverse;
 
-  ///[ScrollPageController.controller]
+  /// [ScrollPageController.controller]
   final ScrollPageController controller;
 
-  ///[PageView.pageSnapping]
+  /// [PageView.pageSnapping]
   final ScrollPhysics? physics;
 
-  ///[PageView.pageSnapping]
+  /// [PageView.pageSnapping]
   final bool pageSnapping;
 
-  ///[PageView.onPageChanged]
+  /// [PageView.onPageChanged]
   final ValueChanged<int>? onPageChanged;
 
-  ///[PageView.dragStartBehavior]
+  /// [PageView.dragStartBehavior]
   final DragStartBehavior dragStartBehavior;
 
-  ///[PageView.clipBehavior]
+  /// [PageView.clipBehavior]
   final Clip? clipBehavior;
 
   final List<Widget> children;
 
-  ///指示点颜色
+  /// 指示点颜色
   final Color indicatorColor;
 
-  ///选中的指示点颜色
+  /// 选中的指示点颜色
   final Color checkedIndicatorColor;
 
-  ///指示点半径
+  /// 指示点半径
   final double indicatorRadius;
 
-  ///PageView指示器位置
+  /// PageView指示器位置
   final Alignment indicatorAlign;
 
-  ///Indicator Padding
+  /// Indicator Padding
   final EdgeInsets indicatorPadding;
 
-  ///[IndicatorWidgetBuilder]
+  /// [IndicatorWidgetBuilder]
   final IndicatorWidgetBuilder? indicatorWidgetBuilder;
 
   const ScrollPageView({
@@ -88,7 +89,7 @@ class ScrollPageView extends StatefulWidget {
     this.restorationId,
     this.clipBehavior = Clip.hardEdge,
     this.children = const <Widget>[],
-    this.delay = const Duration(seconds: 2),
+    this.delay = const Duration(seconds: 3),
     this.duration = const Duration(milliseconds: 800),
     this.indicatorColor = Colors.white,
     this.checkedIndicatorColor = Colors.deepOrange,
@@ -99,10 +100,11 @@ class ScrollPageView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _State();
+  State<StatefulWidget> createState() => _ScrollPageViewState();
 }
 
-class _State extends State<ScrollPageView> with WidgetsBindingObserver {
+class _ScrollPageViewState extends State<ScrollPageView>
+    with WidgetsBindingObserver {
   bool isActive = true; //当前页面是否处于活跃状态（是否可视）
   bool isUserGesture = false; //用户是否正在拖拽页面
   bool isEnd = false; //用户拖拽是否结束
@@ -114,7 +116,7 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     _initWidget();
     _start();
   }
@@ -123,7 +125,7 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
   void dispose() {
     cancelTimer();
     widget.controller.get().dispose();
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -143,8 +145,23 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
     }
   }
 
+  /// Widget可视范围发生改变
+  void _onVisibilityChanged(VisibilityInfo info) {
+    if (info.visibleFraction < 1) {
+      isActive = false;
+      _stop();
+    } else if (!isActive) {
+      isActive = true;
+      _start();
+    }
+  }
+
   @override
-  Widget build(BuildContext context) => NotificationListener(
+  Widget build(BuildContext context) {
+    return VisibilityDetector(
+      key: widget.key ?? Key(hashCode.toString()),
+      onVisibilityChanged: _onVisibilityChanged,
+      child: NotificationListener(
         onNotification: (notification) => _onNotification(notification),
         child: Stack(
           children: [
@@ -154,7 +171,7 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
               controller: widget.controller.get(),
               physics: widget.physics,
               pageSnapping: widget.pageSnapping,
-              onPageChanged: (index) => _onPageChanged(index),
+              onPageChanged: _onPageChanged,
               children: _children,
               dragStartBehavior: widget.dragStartBehavior,
               allowImplicitScrolling: widget.allowImplicitScrolling,
@@ -190,7 +207,9 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
             ),
           ],
         ),
-      );
+      ),
+    );
+  }
 
   _buildIndicators() {
     if (_children.isEmpty || _children.length < 2) {
@@ -275,7 +294,10 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
   void createTimer() {
     if (widget.isTimer) {
       cancelTimer();
-      _timer = Timer.periodic(widget.delay, (timer) => _scrollPage());
+      _timer = Timer.periodic(
+        widget.delay + widget.duration,
+        (timer) => _scrollPage(),
+      );
     }
   }
 
@@ -297,7 +319,7 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
     if (index == 0) {
       //当前选中的是第一个位置，自动选中倒数第二个位置
       currentIndex = _children.length - 2;
-      await Future.delayed(const Duration(milliseconds: 400));
+      await Future.delayed(widget.duration);
       if (widget.controller.get().hasClients) {
         widget.controller.get().jumpToPage(currentIndex);
         realPosition = currentIndex - 1;
@@ -305,7 +327,7 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
     } else if (index == _children.length - 1) {
       //当前选中的是倒数第一个位置，自动选中第一个索引
       currentIndex = 1;
-      await Future.delayed(const Duration(milliseconds: 400));
+      await Future.delayed(widget.duration);
       if (widget.controller.get().hasClients) {
         widget.controller.get().jumpToPage(currentIndex);
         realPosition = 0;
@@ -315,7 +337,6 @@ class _State extends State<ScrollPageView> with WidgetsBindingObserver {
       realPosition = index - 1;
       if (realPosition < 0) realPosition = 0;
     }
-    // print('realPosition: $realPosition');
     if (widget.onPageChanged != null) {
       widget.onPageChanged!(realPosition);
     }
