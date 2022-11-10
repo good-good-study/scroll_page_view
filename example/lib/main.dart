@@ -59,8 +59,7 @@ class _MyAppState extends State<MyApp> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) {
-                        return Scaffold(
-                            appBar: AppBar(title: const Text('二级页面')));
+                        return Scaffold(appBar: AppBar(title: const Text('二级页面')));
                       }),
                     );
                   },
@@ -69,8 +68,9 @@ class _MyAppState extends State<MyApp> {
                     child: ScrollPageView(
                       key: const Key('d'),
                       controller: ScrollPageController(),
-                      children:
-                          _images.map((image) => _imageView(image)).toList(),
+                      children: (_images.sublist(0, 1))
+                          .map((image) => _imageView(image))
+                          .toList(),
                     ),
                   ),
                 ),
@@ -93,9 +93,8 @@ class _MyAppState extends State<MyApp> {
                     controller: ScrollPageController(),
                     delay: const Duration(seconds: 3),
                     indicatorAlign: Alignment.centerRight,
-                    children: (_images.reversed)
-                        .map((image) => _imageView(image))
-                        .toList(),
+                    children:
+                        (_images.reversed).map((image) => _imageView(image)).toList(),
                   ),
                 ),
               ),
@@ -119,11 +118,9 @@ class _MyAppState extends State<MyApp> {
                       controller: ScrollPageController(),
                       delay: const Duration(seconds: 4),
                       indicatorAlign: Alignment.bottomRight,
-                      indicatorPadding:
-                          const EdgeInsets.only(bottom: 8, right: 16),
+                      indicatorPadding: const EdgeInsets.only(bottom: 8, right: 16),
                       indicatorWidgetBuilder: _indicatorBuilder,
-                      children:
-                          _images.map((image) => _imageView(image)).toList(),
+                      children: _images.map((image) => _imageView(image)).toList(),
                     ),
                   ),
                 ),
@@ -173,9 +170,7 @@ class _MyAppState extends State<MyApp> {
             TextSpan(
               text: '$length',
               style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500),
+                  fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
             ),
           ],
         ),

@@ -103,8 +103,7 @@ class ScrollPageView extends StatefulWidget {
   State<StatefulWidget> createState() => _ScrollPageViewState();
 }
 
-class _ScrollPageViewState extends State<ScrollPageView>
-    with WidgetsBindingObserver {
+class _ScrollPageViewState extends State<ScrollPageView> with WidgetsBindingObserver {
   bool isActive = true; //当前页面是否处于活跃状态（是否可视）
   bool isUserGesture = false; //用户是否正在拖拽页面
   bool isEnd = false; //用户拖拽是否结束
@@ -112,6 +111,9 @@ class _ScrollPageViewState extends State<ScrollPageView>
   int currentIndex = 0;
   int realPosition = 0;
   List<Widget> _children = <Widget>[];
+
+  /// Page数量少于2个时，不循环
+  bool get isTimer => widget.isTimer && widget.children.length > 1;
 
   @override
   void initState() {
@@ -168,7 +170,7 @@ class _ScrollPageViewState extends State<ScrollPageView>
             PageView(
               scrollDirection: widget.scrollDirection,
               reverse: widget.reverse,
-              controller: widget.controller.get(),
+              controller: widget.children.length < 2 ? null : widget.controller.get(),
               physics: widget.physics,
               pageSnapping: widget.pageSnapping,
               onPageChanged: _onPageChanged,
@@ -292,7 +294,7 @@ class _ScrollPageViewState extends State<ScrollPageView>
 
   ///创建定时器
   void createTimer() {
-    if (widget.isTimer) {
+    if (isTimer) {
       cancelTimer();
       _timer = Timer.periodic(
         widget.delay + widget.duration,
@@ -316,6 +318,7 @@ class _ScrollPageViewState extends State<ScrollPageView>
 
   ///page切换后的回调，及时修复索引
   _onPageChanged(int index) async {
+    if (widget.children.length < 2) return;
     if (index == 0) {
       //当前选中的是第一个位置，自动选中倒数第二个位置
       currentIndex = _children.length - 2;
@@ -345,7 +348,7 @@ class _ScrollPageViewState extends State<ScrollPageView>
 
   ///开始定时滑动
   void _start() {
-    if (!widget.isTimer) return;
+    if (!isTimer) return;
     if (!isActive) return;
     if (_children.length <= 1) return;
     createTimer();
@@ -353,7 +356,7 @@ class _ScrollPageViewState extends State<ScrollPageView>
 
   ///停止定时滑动
   void _stop() {
-    if (!widget.isTimer) return;
+    if (!isTimer) return;
     cancelTimer();
   }
 
