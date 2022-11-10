@@ -346,7 +346,7 @@ class _ScrollPageViewState extends State<ScrollPageView> with WidgetsBindingObse
     setState(() {});
   }
 
-  ///开始定时滑动
+  /// 开始定时滑动
   void _start() {
     if (!isTimer) return;
     if (!isActive) return;
@@ -354,18 +354,18 @@ class _ScrollPageViewState extends State<ScrollPageView> with WidgetsBindingObse
     createTimer();
   }
 
-  ///停止定时滑动
+  /// 停止定时滑动
   void _stop() {
     if (!isTimer) return;
     cancelTimer();
   }
 
-  ///取消定时器
+  /// 取消定时器
   void cancelTimer() {
     _timer?.cancel();
   }
 
-  ///Page滑动监听
+  /// Page滑动监听
   _onNotification(notification) {
     if (notification is ScrollStartNotification) {
       isEnd = false;
