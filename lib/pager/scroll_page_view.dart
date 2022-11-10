@@ -19,7 +19,7 @@ typedef IndicatorWidgetBuilder = Widget? Function(
 class ScrollPageView extends StatefulWidget {
   final bool isTimer;
 
-  ///Page切换滑动的时间
+  /// Page切换滑动的时间
   final Duration duration;
 
   /// 多长时间切换一次Page
